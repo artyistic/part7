@@ -2,12 +2,12 @@ import { useState } from 'react'
 import About from './components/About'
 import CreateNew from './components/CreateNew'
 import AnecdoteList from './components/AnecdoteList'
-import Footer from './Footer'
+import Footer from './components/Footer'
 
 import {
   Routes, Route, Link, useMatch
 } from 'react-router-dom'
-import Anecdote from './Anecdote'
+import Anecdote from './components/Anecdote'
 
 
 const App = () => {
