@@ -2,55 +2,67 @@ import Togglable from "./Togglable"
 import Blog from "./Blog"
 import CreateBlog from "./CreateBlog"
 import blogService from "../services/blogs"
-import { useState, useEffect, useRef } from "react"
-const ShowBlogs = ({ setMessage, username }) => {
-  const [blogs, setBlogs] = useState([])
+import { useEffect, useRef } from "react"
+import { useDispatch } from "react-redux"
+import { clearNotification, setNotification } from "../reducers/notificationReducer"
+import { setAll, addBlog, removeBlog, changeBlog } from "../reducers/blogsReducer"
+import { useSelector } from "react-redux"
 
+const ShowBlogs = ({ username }) => {
+  //const [blogs, setBlogs] = useState([])
   const createBlogRef = useRef()
+  const dispatch = useDispatch()
+  const blogs = useSelector(state => state.blogs)
+  const sortedBlogs = [...blogs].sort((a, b) => {return b.likes - a.likes})
 
   useEffect(() => {
     blogService.getAll().then((intialBlogs) => {
-      setBlogs(intialBlogs)
+      //setBlogs(intialBlogs)
+      dispatch(setAll(intialBlogs))
     })
-  }, [])
+  }, [dispatch])
 
   // slightly clunky since we are passing the whole blog objects now for create delete and update
   const createBlog = async (newBlog) => {
     createBlogRef.current.toggleVisibility()
     const addedBlog = await blogService.createNew(newBlog)
-    setBlogs(blogs.concat(addedBlog))
-    setMessage(`new blog ${addedBlog.title} by ${addedBlog.author} is added`)
-    setTimeout(() => setMessage(), 5000)
+    dispatch(addBlog(addedBlog))
+    dispatch(setNotification(`new blog ${addedBlog.title} by ${addedBlog.author} is added`))
+    setTimeout(() => dispatch(clearNotification()), 5000)
   }
 
   const deleteBlog = async (deletedBlog) => {
     if (
       window.confirm(
-        `Do you really want to delete ${deleteBlog.title} by ${deletedBlog.author}`
+        `Do you really want to delete ${deletedBlog.title} by ${deletedBlog.author}`
       )
     ) {
       await blogService.deleteBlog(deletedBlog.id)
       // update blogs list
-      setBlogs(blogs.filter((blog) => blog.id !== deletedBlog.id))
-      setMessage(`new blog ${deletedBlog.title} by ${deletedBlog.author} is deleted`)
-      setTimeout(() => setMessage(), 5000)
+      //setBlogs(blogs.filter((blog) => blog.id !== deletedBlog.id))
+      dispatch(removeBlog(deletedBlog.id))
+      dispatch(setNotification(`new blog ${deletedBlog.title} by ${deletedBlog.author} is deleted`))
+      setTimeout(() => dispatch(clearNotification()), 5000)
     }
   }
 
-  const updateBlog = async (updatedBlog) => {
+  const updateBlog = async (toUpdateBlog) => {
+    const updatedBlog = {
+      ...toUpdateBlog,
+      likes: toUpdateBlog.likes + 1,
+    }
     await blogService.updateBlog(updatedBlog.id, {
       ...updatedBlog,
-      likes: (updatedBlog.likes += 1),
+      likes: updatedBlog.likes + 1,
     })
-    setBlogs([...blogs])
+    dispatch(changeBlog(updatedBlog))
   }
   return (
     <div>
       <Togglable buttonLabel="new Blog" ref={createBlogRef}>
         <CreateBlog createBlog={createBlog} />
       </Togglable>
-      {/* blogs are sorted in descending order according to the number of likes, comparator function is reversed bc of that */}
-      {blogs.sort((a, b) => {return b.likes - a.likes}).map((blog) => (
+      {sortedBlogs.map((blog) => (
         <Blog
           key={blog.id}
           blog={blog}
