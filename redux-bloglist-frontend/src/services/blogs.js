@@ -35,9 +35,14 @@ const updateBlog = async (updatedId, updatedBlog) => {
   await axios.put(`${baseUrl}/${updatedId}`, updatedBlog, config)
 }
 
+
+const commentBlog = async (commentedBlogId, addedComment) => {
+  await axios.post(`${baseUrl}/${commentedBlogId}/comments`, { comment: addedComment })
+}
 const setToken = (updateToken) => {
   token = `Bearer ${updateToken}`
 }
 
 
-export default { getAll, createNew, deleteBlog, updateBlog, setToken }
+
+export default { getAll, createNew, deleteBlog, updateBlog, commentBlog, setToken }

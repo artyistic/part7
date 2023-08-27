@@ -22,7 +22,8 @@ blogsRouter.post("/", async (request, response) => {
   const newBlog = new Blog({
     ...body,
     likes: body.likes || 0,
-    user: user._id
+    user: user._id,
+    comments: []
   })
   const addedBlog = await newBlog.save()
   // very important since the frontend needs to know the details of the user to render the details of the person that created the
@@ -66,6 +67,12 @@ blogsRouter.put("/:id", async (request, response) => {
   }catch(error){
     console.log(error.message)
   }
+})
+
+blogsRouter.post("/:id/comments", async (request, response) => {
+  const blogToComment = await Blog.findById(request.params.id)
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, {comments: blogToComment.comments.concat(request.body.comment)}, {new: true})
+  response.json(updatedBlog)
 })
 
 module.exports = blogsRouter
