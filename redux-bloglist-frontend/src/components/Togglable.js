@@ -1,5 +1,6 @@
 import { forwardRef, useState, useImperativeHandle } from "react"
 import PropTypes from "prop-types"
+import { Button } from "react-bootstrap"
 
 const Togglable = forwardRef((props, refs) => {
   const [visible, setVisible] = useState(false)
@@ -22,14 +23,14 @@ const Togglable = forwardRef((props, refs) => {
       {
         !visible &&
           <div>
-            <button onClick={toggleVisibility}>{props.buttonLabel}</button>
+            <Button variant="primary" onClick={toggleVisibility}>{props.buttonLabel}</Button>
           </div>
       }
       {
         visible &&
           <div>
             {props.children}
-            <button onClick={toggleVisibility}>cancel</button>
+            <Button variant="secondary" onClick={toggleVisibility}>cancel</Button>
           </div>
       }
     </div>

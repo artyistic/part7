@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
 import { removeUser } from "../reducers/userReducer"
+import { Button } from "react-bootstrap"
 const ShowLoggedInUser = () => {
   const user = useSelector(state => state.user)
   const dispatch = useDispatch()
@@ -13,7 +14,7 @@ const ShowLoggedInUser = () => {
   else{
     return (
       <>
-        {user.name} is now logged in <button onClick={handleLogout}>Logout</button>
+        {user.name} is now logged in <Button onClick={handleLogout}>Logout</Button>
       </>
     )
   }

@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux"
 import { clearNotification, setNotification } from "../reducers/notificationReducer"
 import { setAll, addBlog, removeBlog, changeBlog } from "../reducers/blogsReducer"
 import { useSelector } from "react-redux"
+import { ListGroup } from "react-bootstrap"
 
 const ShowBlogs = ({ username }) => {
   //const [blogs, setBlogs] = useState([])
@@ -62,15 +63,18 @@ const ShowBlogs = ({ username }) => {
       <Togglable buttonLabel="new Blog" ref={createBlogRef}>
         <CreateBlog createBlog={createBlog} />
       </Togglable>
-      {sortedBlogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          deleteBlog={deleteBlog}
-          updateBlog={updateBlog}
-          currUsername={username}
-        />
-      ))}
+
+      <ListGroup>
+        {sortedBlogs.map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            deleteBlog={deleteBlog}
+            updateBlog={updateBlog}
+            currUsername={username}
+          />
+        ))}
+      </ListGroup>
     </div>
   )
 }

@@ -1,18 +1,16 @@
 import { useEffect, useState } from "react"
 import blogService from "./services/blogs"
 import Notification from "./components/Notification"
-import ShowLoggedInUser from "./components/ShowLoggedInUser"
 import LoginForm from "./components/LoginForm"
 import ShowBlogs from "./components/ShowBlogs"
 import { useSelector, useDispatch } from "react-redux"
 import { setUser } from "./reducers/userReducer"
 import UsersView from "./components/UsersView"
 import usersService from "./services/users"
-import {
-  Routes, Route, Link, useMatch
-} from "react-router-dom"
+import { Routes, Route, useMatch } from "react-router-dom"
 import UserStats from "./components/UserStats"
 import BlogDetail from "./components/BlogDetail"
+import TopBar from "./components/TopBar"
 
 const App = () => {
   const [allUsers, setAllUsers] = useState([])
@@ -37,19 +35,16 @@ const App = () => {
     document.title = "Blogs"
   })
 
-  const padding = {
-    padding: 5
-  }
-
   const match = useMatch("/users/:id")
   const userChosen = match
     ? allUsers.find(user => {
       return user.id === (match.params.id)
     })
     : null
+
   return (
     <>
-      <div>
+      <div className="container" >
         <Notification/>
         {user === null ? (
           <>
@@ -58,20 +53,12 @@ const App = () => {
           </>
         ) : (
           <>
-            <div>
-              <Link style={padding} to="/">blogs</Link>
-              <Link style={padding} to="/users">users</Link>
-              <ShowLoggedInUser/>
-            </div>
+            <TopBar/>
             <h1>Blogs app</h1>
             <Routes>
               <Route path="/users" element={<UsersView users={allUsers}/>} />
               <Route path="/" element={<ShowBlogs username={user.username} />} />
-              <Route path="/users/:id" element={
-                <>
-                  <UserStats userChosen={userChosen}/>
-                </>
-              }/>
+              <Route path="/users/:id" element={ <UserStats userChosen={userChosen} /> }/>
               <Route path="/blogs/:id" element={<BlogDetail/>}/>
             </Routes>
           </>

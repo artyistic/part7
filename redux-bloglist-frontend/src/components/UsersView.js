@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom"
+import { Table } from "react-bootstrap"
 const UsersView = ({ users }) => {
   if (!users) {
     return <div>Users stat loading</div>
@@ -6,7 +7,7 @@ const UsersView = ({ users }) => {
   return (
     <div>
       <h2>Users</h2>
-      <table>
+      <Table striped>
         <tbody>
           <tr>
             <th></th>
@@ -21,7 +22,7 @@ const UsersView = ({ users }) => {
             )
           })}
         </tbody>
-      </table>
+      </Table>
     </div>
   )
 }
